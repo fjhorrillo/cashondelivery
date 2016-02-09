@@ -55,7 +55,8 @@ class CashondeliveryValidationModuleFrontController extends ModuleFrontControlle
 		if (Tools::getValue('confirm'))
 		{
 			$customer = new Customer((int)$this->context->cart->id_customer);
-			$total = $this->context->cart->getOrderTotal(true, Cart::BOTH);
+			$extrafee = $this->module->getExtraFee($this->context->cart->getOrderTotal(true, Cart::BOTH_WITHOUT_SHIPPING));
+			$total = $this->context->cart->getOrderTotal(true, Cart::BOTH) + $extrafee;
 			$this->module->validateOrder((int)$this->context->cart->id, Configuration::get('PS_OS_PREPARATION'), $total, $this->module->displayName, null, array(), null, false, $customer->secure_key);
 			Tools::redirectLink(__PS_BASE_URI__.'order-confirmation.php?key='.$customer->secure_key.'&id_cart='.(int)$this->context->cart->id.'&id_module='.(int)$this->module->id.'&id_order='.(int)$this->module->currentOrder);
 		}
@@ -68,8 +69,12 @@ class CashondeliveryValidationModuleFrontController extends ModuleFrontControlle
 	{
 		parent::initContent();
 
+		$total = $this->context->cart->getOrderTotal(true, Cart::BOTH);
+		$extrafee = $this->module->getExtraFee($this->context->cart->getOrderTotal(true, Cart::BOTH_WITHOUT_SHIPPING));
 		$this->context->smarty->assign(array(
-			'total' => $this->context->cart->getOrderTotal(true, Cart::BOTH),
+			'total' => $total + $extrafee,
+			'total_without_cod' => $total,
+			'extrafee' => $extrafee,
 			'this_path' => $this->module->getPathUri(),//keep for retro compat
 			'this_path_cod' => $this->module->getPathUri(),
 			'this_path_ssl' => Tools::getShopDomainSsl(true, true).__PS_BASE_URI__.'modules/'.$this->module->name.'/'

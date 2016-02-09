@@ -41,6 +41,11 @@
 	<p>
 		<img src="{$this_path_cod}cashondelivery.jpg" alt="{l s='Cash on delivery (COD) payment' mod='cashondelivery'}" style="float:left; margin: 0px 10px 5px 0px;" />
 		{l s='You have chosen the Cash on Delivery method.' mod='cashondelivery'}
+		{if isset($extrafee)}
+			<br/><br />
+			{l s='Surcharge for cash on delivery' mod='cashondelivery'}, <span style="font-style:oblique;color:#555">( {l s='this amount will be added to the shipping' mod='cashondelivery'} )</span>
+			<span id="amount_{$currencies.0.id_currency}" class="price">{convertPrice price=$extrafee}</span>
+		{/if}
 		<br/><br />
 		{l s='The total amount of your order is' mod='cashondelivery'}
 		<span id="amount_{$currencies.0.id_currency}" class="price">{convertPrice price=$total}</span>
